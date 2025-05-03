@@ -1,0 +1,5 @@
+Flask
+Flask-SQLAlchemy
+flask-socketio
+flask-login
+flask-wtf

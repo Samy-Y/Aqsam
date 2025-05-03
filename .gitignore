@@ -1,0 +1,45 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.log
+
+# === Virtual Environment ===
+.venv/
+env/
+venv/
+ENV/
+
+# === SQLite DB ===
+instance/school.db
+
+# === Flask Env Files ===
+.env
+*.env
+
+# === VS Code / IDE ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === MacOS ===
+.DS_Store
+
+# === Testing / Coverage ===
+.coverage
+coverage.xml
+htmlcov/
+pytest_cache/
+__snapshots__/
+
+# === Static build artifacts ===
+dist/
+build/
+*.bak
+*.tmp
+*.orig
