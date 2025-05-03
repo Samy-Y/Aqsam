@@ -7,7 +7,6 @@ class Student(db.Model):
     Attributes:
         id (int): Unique identifier for the student (foreign key to User).
         class_id (int): Identifier for the class the student is enrolled in (foreign key to Class).
-        user (User): Relationship to the User model, representing the student.
     """
     __tablename__ = "student"
 
