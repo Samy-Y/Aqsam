@@ -1,0 +1,13 @@
+site_name: Aqsam
+repo_url: https://github.com/Samy-Y/Aqsam
+site_description: Aqsam is an open-source school management system built with Flask.
+site_author: Samy Y
+copyright: MIT License
+nav:
+  - Home: index.md
+  - Features: features.md
+  - Installation: installation.md
+  - Usage: usage.md
+  - API: api.md
+  - Contributing: contributing.md
+  - License: license.md

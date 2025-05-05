@@ -3,8 +3,10 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 import os
 import json
+
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -19,6 +21,8 @@ from app.models.subject  import Subject
 from app.models.grade    import Grade
 from app.models.article  import Article
 from app.models.teacher_junction import teacher_subject, teacher_class
+
+migrate = Migrate()
 
 # user_loader
 @login_manager.user_loader
@@ -58,4 +62,5 @@ def create_app():
     def index():
         return render_template('index.html')
 
+    migrate.init_app(app, db)
     return app

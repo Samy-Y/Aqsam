@@ -11,3 +11,9 @@ teacher_class = db.Table(
     db.Column("teacher_id", db.Integer, db.ForeignKey("teacher.id"), primary_key=True),
     db.Column("class_id",   db.Integer, db.ForeignKey("class.id"),   primary_key=True)
 )
+
+teacher_grades = db.Table(
+    "teacher_grades",
+    db.Column("teacher_id", db.Integer, db.ForeignKey("teacher.id"), primary_key=True),
+    db.Column("grade_id",   db.Integer, db.ForeignKey("grade.id"),   primary_key=True)
+)

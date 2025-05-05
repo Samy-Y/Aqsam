@@ -2,6 +2,10 @@ from app import db
 from app.models.teacher_junction import teacher_subject
 
 class Subject(db.Model):
+    """Model for the Subject entity.
+    Attributes:
+        id (int): The unique identifier for the subject.
+        name (str): The name of the subject."""
     __tablename__ = "subject"
 
     id   = db.Column(db.Integer, primary_key=True)

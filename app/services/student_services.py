@@ -1,8 +1,7 @@
-from app.models.user import User
 from app.models.student import Student
 from app.services.user_services import create_user
 from app import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from typing import Optional, List
 from app.utils import format_date, format_date_to_obj
 
@@ -25,7 +24,7 @@ def create_student(username: str,
         email=email,
         first_name=first_name,
         last_name=last_name,
-        birth_date=birth_date,
+        birth_date=birth_date, # LEAVE AS STRING, CONVERT IN USER SERVICES
         phone_number=phone_number
     )
     db.session.add(new_user)

@@ -3,3 +3,5 @@ Flask-SQLAlchemy
 flask-socketio
 flask-login
 flask-wtf
+Flask-Migrate
+mkdocs

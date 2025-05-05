@@ -3,10 +3,11 @@ from app.models.student import Student
 from app.models.teacher import Teacher
 from app.models.writer import Writer
 from app import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from typing import Optional, List
 from datetime import datetime, timedelta
 import secrets
+from app.utils import format_date, format_date_to_obj
 
 def get_user_by_id(user_id: int) -> Optional[User]:
     """Get a user by their ID."""
@@ -163,7 +164,7 @@ def is_account_active(user: User) -> bool:
     return user.activated
 
 def create_user(username: str, password: str, role: str, email: str, 
-                first_name: str, last_name: str, birth_date: date, 
+                first_name: str, last_name: str, birth_date: str, 
                 phone_number: Optional[str] = None) -> User:
     """Create a new user.
     
@@ -174,7 +175,7 @@ def create_user(username: str, password: str, role: str, email: str,
         email: The email address for the new user
         first_name: The first name of the new user
         last_name: The last name of the new user
-        birth_date: The birth date of the new user
+        birth_date: The birth date of the new user (in 'YYYY-MM-DD' format)
         phone_number: The phone number of the new user (optional)
         
     Returns:
@@ -189,8 +190,13 @@ def create_user(username: str, password: str, role: str, email: str,
         email=email,
         first_name=first_name,
         last_name=last_name,
-        birth_date=birth_date,
+        birth_date=format_date_to_obj(birth_date),
         phone_number=phone_number,
+        email_verified=False,  # Set to False by default
+        email_verification_token=None,
+        email_verification_expiry=None,
+        password_reset_token=None,
+        password_reset_expiry=None,
         activated=True  # Activate by default, can be changed as needed
     )
     

@@ -5,8 +5,6 @@ from app import db
 from typing import Optional, List
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.utils import format_date, format_date_to_obj
-from datetime import datetime, timezone
-from app.models.user import User
 
 def create_writer(username: Optional[str] = None, 
                   password: Optional[str] = None, 
@@ -24,7 +22,7 @@ def create_writer(username: Optional[str] = None,
         email=email,
         first_name=first_name,
         last_name=last_name,
-        birth_date=format_date_to_obj(birth_date),
+        birth_date=birth_date,  # LEAVE AS STRING, CONVERT IN USER SERVICES
         phone_number=phone_number
     )
     db.session.add(new_user)
@@ -64,6 +62,7 @@ def update_writer(writer_id: int,
           writer.user.last_name = last_name
      if birth_date:
           writer.user.birth_date = format_date_to_obj(birth_date)
+          # Not a string this time, but a date object!
      if phone_number:
           writer.user.phone_number = phone_number
     
