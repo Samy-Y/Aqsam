@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Samy Y">
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Aqsam Database Schema (v1) - Aqsam</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Aqsam</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../features.md" class="nav-link">Features</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../installation.md" class="nav-link">Installation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../usage.md" class="nav-link">Usage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../api.md" class="nav-link">API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../contributing.md" class="nav-link">Contributing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../license.md" class="nav-link">License</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/Samy-Y/Aqsam/edit/master/docs/database_schema.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#aqsam-database-schema-v1" class="nav-link">Aqsam Database Schema (v1)</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#relationships" class="nav-link">Relationships</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="aqsam-database-schema-v1">Aqsam Database Schema (v1)</h1>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Purpose</th>
+<th>Key Columns / Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>user</strong></td>
+<td>Base account info (all roles)</td>
+<td><code>id</code>, <code>username</code>, <code>password_hash</code>, <code>role</code>, profile fields</td>
+</tr>
+<tr>
+<td><strong>student</strong></td>
+<td>Extra fields for students</td>
+<td>PK/FK <code>id</code> → user, <code>class_id</code></td>
+</tr>
+<tr>
+<td><strong>teacher</strong></td>
+<td>Extra fields for teachers</td>
+<td>PK/FK <code>id</code> → user, <code>subject_id</code>, <code>class_id</code></td>
+</tr>
+<tr>
+<td><strong>writer</strong></td>
+<td>Grants article‑writing power</td>
+<td>PK/FK <code>id</code> → user</td>
+</tr>
+<tr>
+<td><strong>class</strong></td>
+<td>School class / section</td>
+<td><code>id</code>, <code>name</code> (e.g. 1A), <code>level</code></td>
+</tr>
+<tr>
+<td><strong>subject</strong></td>
+<td>Teachable subject</td>
+<td><code>id</code>, <code>name</code></td>
+</tr>
+<tr>
+<td><strong>grade</strong></td>
+<td>Student’s grade in a subject</td>
+<td><code>id</code>, <code>student_id</code>, <code>subject_id</code>, <code>grade</code>, <code>date</code>, <code>comment</code></td>
+</tr>
+<tr>
+<td><strong>article</strong></td>
+<td>Markdown article for blog</td>
+<td><code>id</code>, <code>title</code>, <code>author_id</code>, <code>content_md</code>, <code>created_at</code>, <code>last_edited</code>, <code>is_published</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="relationships">Relationships</h2>
+<ul>
+<li><strong>One‑to‑one:</strong> <code>user</code> → <code>student|teacher|writer</code> (same primary key)</li>
+<li><strong>Many‑to‑one:</strong>  </li>
+<li><code>student.class_id</code> → <strong>class</strong>  </li>
+<li><code>grade.student_id</code> → <strong>student</strong>  </li>
+<li><code>grade.subject_id</code> → <strong>subject</strong>  </li>
+<li><code>article.author_id</code> → <strong>writer</strong></li>
+</ul>
+<h3 id="manytomany-links">Many‑to‑Many Links</h3>
+<ul>
+<li><strong>teacher ⇄ subject</strong> (<code>teacher_subject</code>)</li>
+<li><strong>teacher ⇄ class</strong>   (<code>teacher_class</code>)
+| Junction Table | Columns                       | Purpose                          |
+|----------------|-------------------------------|----------------------------------|
+| teacher_subject| <code>teacher_id</code>, <code>subject_id</code>    | Teacher can teach multiple subjects; subject can have multiple teachers |
+| teacher_class  | <code>teacher_id</code>, <code>class_id</code>      | Teacher can teach multiple classes; class can have multiple teachers    |</li>
+</ul>
+<blockquote>
+<p>Future: if teachers can teach <em>multiple</em> classes / subjects, add junction tables <code>teacher_class</code> and <code>teacher_subject</code>.</p>
+</blockquote>
+<hr />
+<p><em>Last updated: <strong>May 3 2025</strong></em></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>MIT License</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
