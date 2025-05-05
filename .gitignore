@@ -43,3 +43,6 @@ build/
 *.bak
 *.tmp
 *.orig
+
+# === MkDocs build output ===
+site/
