@@ -17,6 +17,9 @@ ENV/
 # === SQLite DB ===
 instance/school.db
 
+# === Config ===
+config.json
+
 # === Flask Env Files ===
 .env
 *.env

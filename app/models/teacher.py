@@ -35,7 +35,7 @@ class Teacher(db.Model):
     grades = db.relationship(
         "Grade",
         secondary="teacher_grades",
-        back_populates="teachers",
+        back_populates="teacher",
     )
 
 

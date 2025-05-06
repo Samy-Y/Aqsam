@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from app import db
 from app.models.user import User
 from app.forms.auth_forms import LoginForm
@@ -26,10 +26,16 @@ def login():
             login_user(user, 
                        remember=form.remember_me.data # i discovered this while vibe coding :sob:
                        )
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('main.index'))
+            if current_user.role == 'admin':
+                return redirect(url_for('admin.index'))
+            elif current_user.role == 'teacher':
+                return redirect(url_for('teacher.index'))
+            elif current_user.role == 'student':
+                return redirect(url_for('student.index'))
+            elif current_user.role == 'writer':
+                return redirect(url_for('writer.index'))
         else:
-            flash('Invalid username or password', 'danger')
+            redirect(url_for('auth.login',form=form, failed=True))
     
     return render_template('auth/login.html', form=form)
 

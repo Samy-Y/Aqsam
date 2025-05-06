@@ -1,5 +1,1 @@
-{
-    "language": "en",
-    "SECRET_KEY": "super-secret-dev-key",
-    "DATABASE_URI": "sqlite:///../instance/school.db"
-}
+{"language": "en", "SECRET_KEY": "super-secret-dev-key", "DATABASE_URI": "sqlite:///../instance/school.db", "first_load": false}

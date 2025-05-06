@@ -22,6 +22,8 @@ from app.models.grade    import Grade
 from app.models.article  import Article
 from app.models.teacher_junction import teacher_subject, teacher_class
 
+from app.services.user_services import create_user,get_user_by_username
+
 migrate = Migrate()
 
 # user_loader
@@ -32,8 +34,14 @@ def load_user(user_id):
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')
 
-    # Load config
+    # Create the config.json file if it doesn't exist
     config_path = os.path.join(os.path.dirname(__file__), '..', 'config.json')
+    if not os.path.exists(config_path):
+        with open(config_path, 'w') as f:
+            default_cfg = {"language": "en", "SECRET_KEY": "super-secret-dev-key", "DATABASE_URI": "sqlite:///../instance/school.db", "first_load": True}
+            json.dump(default_cfg, f)
+
+    # Load config
     with open(config_path) as f:
         config = json.load(f)
 
@@ -63,4 +71,26 @@ def create_app():
         return render_template('index.html')
 
     migrate.init_app(app, db)
+    print("[INFO] Database migration initialized.")
+    # Create the database if it doesn't exist
+    if not os.path.exists(os.path.join(os.path.dirname(__file__), '..', 'instance', 'school.db')) and config.get('first_load'):
+        with app.app_context():
+            db.create_all()
+            print("[INFO] Database created.")
+    if config.get('first_load'):
+        # Create an admin user
+        with app.app_context():
+            if not get_user_by_username('admin'):
+                create_user(
+                    username='admin',
+                    password='admin',
+                    role='admin')
+                print("[INFO] Admin user created.")
+            else:
+                print("[INFO] Admin user already exists.")
+    config['first_load'] = False
+    with open(config_path, 'w') as f:
+        json.dump(config, f)
+    print("[INFO] Config updated.")
+    
     return app

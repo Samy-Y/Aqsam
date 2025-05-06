@@ -29,16 +29,17 @@ class User(UserMixin, db.Model):
     username    = db.Column(db.String(150), unique=True, nullable=False)
     password    = db.Column(db.String(200), nullable=False)
     role        = db.Column(db.String(20), nullable=False)           # 'admin' | 'teacher' | 'student' | 'writer'
-    email       = db.Column(db.String(150), unique=True, nullable=False)
-    first_name  = db.Column(db.String(150), nullable=False)
-    last_name   = db.Column(db.String(150), nullable=False)
-    birth_date  = db.Column(db.Date,       nullable=False)
-    phone_number= db.Column(db.String(20))
+    email       = db.Column(db.String(150), unique=True, nullable=True)
+    first_name  = db.Column(db.String(150), nullable=True)
+    last_name   = db.Column(db.String(150), nullable=True)
+    birth_date  = db.Column(db.Date,       nullable=True)
+    phone_number= db.Column(db.String(20), nullable=True)
+    profile_picture_filename = db.Column(db.String(200), nullable=True)  # URL to the profile picture (in assets/profile_pictures/)
     email_verified            = db.Column(db.Boolean, default=False)         # Email verification status
-    email_verification_token  = db.Column(db.String(200))         # Token for email verification
-    email_verification_expiry = db.Column(db.DateTime)          # Expiry time for email verification token
-    password_reset_token      = db.Column(db.String(200))            # Token for password reset
-    password_reset_expiry     = db.Column(db.DateTime)             # Expiry time for password reset token
+    email_verification_token  = db.Column(db.String(200), nullable=True)         # Token for email verification
+    email_verification_expiry = db.Column(db.DateTime, nullable=True)          # Expiry time for email verification token
+    password_reset_token      = db.Column(db.String(200), nullable=True)            # Token for password reset
+    password_reset_expiry     = db.Column(db.DateTime, nullable=True)             # Expiry time for password reset token
     activated   = db.Column(db.Boolean, default=False)             # Account activation status
 
     # one‑to‑one relationships back‑refs (set uselist=False)

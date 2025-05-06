@@ -20,7 +20,7 @@ class Grade(db.Model):
     id          = db.Column(db.Integer, primary_key=True)
     student_id  = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
     subject_id  = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable=False)
-    teacher_id  = db.Column(db.Integer, db.ForeignKey("teacher.id"), nullable=False)
+    teacher_id  = db.Column(db.Integer, db.ForeignKey("teachers.id"), nullable=False)
     grade       = db.Column(db.Float,    nullable=False)
     date        = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     comment     = db.Column(db.String(250))

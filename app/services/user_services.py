@@ -163,8 +163,8 @@ def is_account_active(user: User) -> bool:
     """
     return user.activated
 
-def create_user(username: str, password: str, role: str, email: str, 
-                first_name: str, last_name: str, birth_date: str, 
+def create_user(username: str, password: str, role: str, email: Optional[str] = None, 
+                first_name: Optional[str] = None, last_name: Optional[str] = None, birth_date: Optional[str] = None, 
                 phone_number: Optional[str] = None) -> User:
     """Create a new user.
     
@@ -203,3 +203,21 @@ def create_user(username: str, password: str, role: str, email: str,
     db.session.add(user)
     db.session.commit()
     return user
+
+def set_user_pfp(user_id: int, pfp_filename: str) -> bool:
+    """Set the profile picture filename for a user.
+    
+    Args:
+        user_id: The ID of the user
+        pfp_filename: The filename of the profile picture
+        
+    Returns:
+        True if successful
+    """
+    user = User.query.get(user_id)
+    if not user:
+        return False
+    
+    user.profile_picture_filename = pfp_filename
+    db.session.commit()
+    return True

@@ -6,6 +6,10 @@
     <title>Aqsam</title>
 </head>
 <body>
-    Welcome.
+    <nav>
+        <a href="{{url_for('index')}}">Home</a>
+        <a href="/about">About us</a>
+        <a href="{{url_for('auth.login')}}">Login</a>
+    </nav>
 </body>
 </html>

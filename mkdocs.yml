@@ -6,8 +6,7 @@ copyright: MIT License
 nav:
   - Home: index.md
   - Features: features.md
-  - Installation: installation.md
   - Usage: usage.md
-  - API: api.md
-  - Contributing: contributing.md
-  - License: license.md
+  - Models: models.md
+  - Database: database_schema.md
+  - Services: service_functions.md
