@@ -8,7 +8,7 @@
         <meta name="author" content="Samy Y">
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Database - Aqsam</title>
+        <title>Usage - Aqsam</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -41,13 +41,13 @@
                                 <a href="../features/" class="nav-link">Features</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../usage/" class="nav-link">Usage</a>
+                                <a href="./" class="nav-link active" aria-current="page">Usage</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../models/" class="nav-link">Models</a>
                             </li>
                             <li class="nav-item">
-                                <a href="./" class="nav-link active" aria-current="page">Database</a>
+                                <a href="../database_schema/" class="nav-link">Database</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../service_functions/" class="nav-link">Services</a>
@@ -61,17 +61,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../models/" class="nav-link">
+                                <a rel="prev" href="../features/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../service_functions/" class="nav-link">
+                                <a rel="next" href="../models/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/Samy-Y/Aqsam/edit/master/docs/database_schema.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/Samy-Y/Aqsam/edit/master/docs/usage.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -91,20 +91,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#database-schema" class="nav-link">Database Schema</a>
+            <li class="nav-item" data-bs-level="1"><a href="#usage" class="nav-link">Usage</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#tables" class="nav-link">Tables</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#relationships" class="nav-link">Relationships</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#junction-tables" class="nav-link">Junction Tables</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -112,100 +100,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="database-schema">Database Schema</h1>
-<h2 id="tables">Tables</h2>
-<table>
-<thead>
-<tr>
-<th>Table</th>
-<th>Purpose</th>
-<th>Key Columns / Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>user</strong></td>
-<td>Base account info (all roles)</td>
-<td><code>id</code>, <code>username</code>, <code>password_hash</code>, <code>role</code>, profile fields</td>
-</tr>
-<tr>
-<td><strong>student</strong></td>
-<td>Extra fields for students</td>
-<td>PK/FK <code>id</code> → user, <code>class_id</code></td>
-</tr>
-<tr>
-<td><strong>teachers</strong></td>
-<td>Extra fields for teachers</td>
-<td>PK/FK <code>id</code> → user, <code>subject_id</code>, <code>class_id</code></td>
-</tr>
-<tr>
-<td><strong>writer</strong></td>
-<td>Grants article‑writing power</td>
-<td>PK/FK <code>id</code> → user</td>
-</tr>
-<tr>
-<td><strong>class</strong></td>
-<td>School class / section</td>
-<td><code>id</code>, <code>name</code> (e.g. 1A), <code>level</code></td>
-</tr>
-<tr>
-<td><strong>subject</strong></td>
-<td>Teachable subject</td>
-<td><code>id</code>, <code>name</code></td>
-</tr>
-<tr>
-<td><strong>grade</strong></td>
-<td>Student’s grade in a subject</td>
-<td><code>id</code>, <code>student_id</code>, <code>subject_id</code>, <code>grade</code>, <code>date</code>, <code>comment</code></td>
-</tr>
-<tr>
-<td><strong>article</strong></td>
-<td>Markdown article for blog</td>
-<td><code>id</code>, <code>title</code>, <code>author_id</code>, <code>content_md</code>, <code>created_at</code>, <code>last_edited</code>, <code>is_published</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="relationships">Relationships</h2>
-<ul>
-<li><strong>One‑to‑one:</strong> <code>user</code> → <code>student|teacher|writer</code> (same primary key)</li>
-<li><strong>Many‑to‑one:</strong>  </li>
-<li><code>student.class_id</code> → <strong>class</strong>  </li>
-<li><code>grade.student_id</code> → <strong>student</strong>  </li>
-<li><code>grade.subject_id</code> → <strong>subject</strong>  </li>
-<li><code>article.author_id</code> → <strong>writer</strong></li>
-</ul>
-<h3 id="manytomany-links">Many‑to‑Many Links</h3>
-<ul>
-<li><strong>teacher ⇄ subject</strong> (<code>teacher_subject</code>)</li>
-<li><strong>teacher ⇄ class</strong>   (<code>teacher_class</code>)</li>
-</ul>
-<h2 id="junction-tables">Junction Tables</h2>
-<table>
-<thead>
-<tr>
-<th>Junction Tables</th>
-<th>Columns</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>teacher_subject</td>
-<td><code>teacher_id</code>, <code>subject_id</code></td>
-<td>Teacher can teach multiple subjects; subject can have multiple teachers</td>
-</tr>
-<tr>
-<td>teacher_class</td>
-<td><code>teacher_id</code>, <code>class_id</code></td>
-<td>Teacher can teach multiple classes; class can have multiple teachers</td>
-</tr>
-<tr>
-<td>teacher_grades</td>
-<td><code>teacher_id</code>, <code>grade_id</code></td>
-<td>Teacher can grade multiple students across multiple subjects</td>
-</tr>
-</tbody>
-</table></div>
+<h1 id="usage">Usage</h1>
+<p>Work in progress</p></div>
             </div>
         </div>
 

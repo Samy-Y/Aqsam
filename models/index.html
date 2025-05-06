@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Samy Y">
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Models - Aqsam</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Aqsam</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../features/" class="nav-link">Features</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../usage/" class="nav-link">Usage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Models</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../database_schema/" class="nav-link">Database</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../service_functions/" class="nav-link">Services</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../usage/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../database_schema/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/Samy-Y/Aqsam/edit/master/docs/models.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#models-documentation" class="nav-link">Models Documentation</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#user" class="nav-link">User</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#student" class="nav-link">Student</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#teacher" class="nav-link">Teacher</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#class" class="nav-link">Class</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#subject" class="nav-link">Subject</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#grade" class="nav-link">Grade</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#writer" class="nav-link">Writer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#article" class="nav-link">Article</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="models-documentation">Models Documentation</h1>
+<p>This document describes the data models used in the Aqsam application.</p>
+<h2 id="user">User</h2>
+<p>Represents a user account in the system.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the user.</li>
+<li><code>username</code> (str): Unique username for the user.</li>
+<li><code>password</code> (str): Hashed password for the user.</li>
+<li><code>role</code> (str): Role of the user (e.g., 'admin', 'teacher', 'student', 'writer').</li>
+<li><code>email</code> (str): User's email address.</li>
+<li><code>first_name</code> (str): User's first name.</li>
+<li><code>last_name</code> (str): User's last name.</li>
+<li><code>birth_date</code> (date): User's birth date.</li>
+<li><code>phone_number</code> (str): User's phone number.</li>
+<li><code>profile_picture_filename</code> (str): Filename of the user's profile picture. Stored in assets/profile_pictures.</li>
+<li><code>email_verified</code> (bool): Indicates if the user's email is verified.</li>
+<li><code>email_verification_token</code> (str): Token for email verification.</li>
+<li><code>email_verification_expiry</code> (datetime): Expiry time for the email verification token.</li>
+<li><code>password_reset_token</code> (str): Token for password reset.</li>
+<li><code>password_reset_expiry</code> (datetime): Expiry time for the password reset token.</li>
+<li><code>activated</code> (bool): Indicates if the user's account is activated.</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>student</code> (Student): One-to-one relationship with the Student model.</li>
+<li><code>teacher</code> (Teacher): One-to-one relationship with the Teacher model.</li>
+<li><code>writer</code> (Writer): One-to-one relationship with the Writer model.</li>
+</ul>
+<h2 id="student">Student</h2>
+<p>Represents a student in the system.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the student (foreign key to User).</li>
+<li><code>class_id</code> (int): Identifier for the class the student is enrolled in (foreign key to Class).</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>user</code> (User): One-to-one relationship with the User model.</li>
+<li><code>class_</code> (Class): Many-to-one relationship with the Class model.</li>
+<li><code>grades</code> (Grade): One-to-many relationship with the Grade model.</li>
+</ul>
+<h2 id="teacher">Teacher</h2>
+<p>Represents a teacher in the system.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the teacher (foreign key to User).</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>subjects</code> (list of Subject): Many-to-many relationship with the Subject model.</li>
+<li><code>classes</code> (list of Class): Many-to-many relationship with the Class model.</li>
+<li><code>grades</code> (list of Grade): One-to-many relationship with the Grade model.</li>
+<li><code>user</code> (User): One-to-one relationship with the User model.</li>
+</ul>
+<h2 id="class">Class</h2>
+<p>Represents a class or grade level.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the class.</li>
+<li><code>name</code> (str): Name of the class (e.g., "A").</li>
+<li><code>level</code> (str): Grade level (e.g., "3rd Year").</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>students</code> (list of Student): One-to-many relationship with the Student model.</li>
+<li><code>teachers</code> (list of Teacher): Many-to-many relationship with the Teacher model.</li>
+</ul>
+<h2 id="subject">Subject</h2>
+<p>Represents a subject.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the subject.</li>
+<li><code>name</code> (str): Name of the subject.</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>teachers</code> (list of Teacher): Many-to-many relationship with the Teacher model.</li>
+<li><code>grades</code> (list of Grade): One-to-many relationship with the Grade model.</li>
+</ul>
+<h2 id="grade">Grade</h2>
+<p>Represents a student's grade in a subject.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the grade.</li>
+<li><code>student_id</code> (int): Foreign key referencing the student.</li>
+<li><code>subject_id</code> (int): Foreign key referencing the subject.</li>
+<li><code>teacher_id</code> (int): Foreign key referencing the teacher.</li>
+<li><code>grade</code> (float): The grade value.</li>
+<li><code>date</code> (datetime): The date when the grade was assigned.</li>
+<li><code>comment</code> (str): Optional comment about the grade.</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>student</code> (Student): Many-to-one relationship with the Student model.</li>
+<li><code>subject</code> (Subject): Many-to-one relationship with the Subject model.</li>
+<li><code>teacher</code> (Teacher): Many-to-one relationship with the Teacher model.</li>
+</ul>
+<h2 id="writer">Writer</h2>
+<p>Represents a writer in the system.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the writer (foreign key to User).</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>user</code> (User): One-to-one relationship with the User model.</li>
+<li><code>articles</code> (list of Article): One-to-many relationship with the Article model.</li>
+</ul>
+<h2 id="article">Article</h2>
+<p>Represents an article written by a writer.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><code>id</code> (int): Unique identifier for the article.</li>
+<li><code>title</code> (str): Title of the article.</li>
+<li><code>author_id</code> (int): ID of the author (writer).</li>
+<li><code>content_md</code> (str): Content of the article in Markdown format.</li>
+<li><code>created_at</code> (datetime): Timestamp when the article was created.</li>
+<li><code>last_edited</code> (datetime): Timestamp when the article was last edited.</li>
+<li><code>is_published</code> (bool): Flag indicating if the article is published.</li>
+</ul>
+<p><strong>Relationships:</strong></p>
+<ul>
+<li><code>author</code> (Writer): Many-to-one relationship with the Writer model.</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>MIT License</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
