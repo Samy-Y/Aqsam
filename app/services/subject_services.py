@@ -82,3 +82,12 @@ def get_subject_by_name(name: str) -> Optional[Subject]:
         Subject object if found, None otherwise
     """
     return Subject.query.filter_by(name=name).first()
+
+def get_all_subjects() -> list[Subject]:
+    """
+    Get all subjects.
+    
+    Returns:
+        List of all Subject objects
+    """
+    return Subject.query.all()

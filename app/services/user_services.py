@@ -9,6 +9,17 @@ from datetime import datetime, timedelta
 import secrets
 from app.utils import format_date, format_date_to_obj
 
+def get_all_users(role : Optional[str] = None) -> List[User]:
+    """Get all users.
+    Attributes:
+        role (str): OPTIONAL - The role of the user (admin, teacher, student, writer) (Must be lowercase!).
+    Returns:
+        List[User]: A list of all users.
+    """
+    if role:
+        return User.query.filter_by(role=role).all()
+    return User.query.all()
+
 def get_user_by_id(user_id: int) -> Optional[User]:
     """Get a user by their ID."""
     return User.query.get(user_id)

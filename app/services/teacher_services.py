@@ -1,64 +1,71 @@
 from app.services.user_services import create_user, get_user_by_id, get_teacher_by_id
 from app.models.teacher import Teacher
+from app.models.subject import Subject
+from app.models.class_ import Class
 from app import db
 from werkzeug.security import generate_password_hash
 from typing import Optional, List
 
 def create_teacher(username: str, 
-                   password: str,
+                   password: str, # Plain password
                    email: str, 
                    first_name: str, 
                    last_name: str, 
                    birth_date: str,
                    phone_number: str,
-                   subjects: List = None,
-                   classes: List = None) -> Teacher:
+                   subjects_ids: List[int] = None, # Changed from subjects to subjects_ids
+                   classes_ids: List[int] = None,  # Changed from classes to classes_ids
+                   activated: bool = True
+                   ) -> Optional[Teacher]:
     """
     Create a new teacher.
     
     Args:
         username: Username for the teacher
-        password: Password for the teacher
+        password: Plain password for the teacher
         email: Email address
         first_name: First name
         last_name: Last name
-        birth_date: Birth date as a string
+        birth_date: Birth date as a string 'YYYY-MM-DD'
         phone_number: Phone number
-        subjects: Optional list of Subject objects to associate with the teacher
-        classes: Optional list of Class objects to associate with the teacher
+        subjects_ids: Optional list of Subject IDs to associate with the teacher
+        classes_ids: Optional list of Class IDs to associate with the teacher
+        activated: Activation status for the user
         
     Returns:
-        The newly created Teacher object
+        The newly created Teacher object or None if user creation failed
     """
-    hashed_password = generate_password_hash(password)
+    # User is created first
     new_user = create_user(
         username=username,
-        password=hashed_password,
+        password=password, # Pass plain password, create_user will hash it
         role="teacher",
         email=email,
         first_name=first_name,
         last_name=last_name,
-        birth_date=birth_date,  # LEAVE AS STRING, CONVERT IN USER SERVICES
+        birth_date=birth_date,
         phone_number=phone_number
     )
-    db.session.add(new_user)
-    db.session.commit()
+    if not new_user:
+        return None
+    
+    new_user.activated = activated # Set activation status for user
 
     # Create a new teacher record
-    new_teacher = Teacher(
-        user=new_user
-    )
-    
+    new_teacher = Teacher(user_id=new_user.id) # Link by user_id
+    db.session.add(new_teacher)
+
     # Add subjects if provided
-    if subjects:
-        new_teacher.subjects = subjects
+    if subjects_ids:
+        teacher_subjects = Subject.query.filter(Subject.id.in_(subjects_ids)).all()
+        new_teacher.subjects = teacher_subjects
         
     # Add classes if provided
-    if classes:
-        new_teacher.classes = classes
+    if classes_ids:
+        teacher_classes = Class.query.filter(Class.id.in_(classes_ids)).all()
+        new_teacher.classes = teacher_classes
         
-    db.session.add(new_teacher)
-    db.session.commit()
+    db.session.commit() # Commit once after all associations
     return new_teacher
 
 def update_teacher(teacher_id: int, **kwargs) -> Optional[Teacher]:
@@ -67,7 +74,8 @@ def update_teacher(teacher_id: int, **kwargs) -> Optional[Teacher]:
     
     Args:
         teacher_id: ID of the teacher to update
-        **kwargs: Keyword arguments with fields to update
+        **kwargs: Keyword arguments with fields to update. 
+                  Includes 'subjects_ids' and 'classes_ids' as lists of IDs.
         
     Returns:
         Updated Teacher object if found, None otherwise
@@ -80,15 +88,38 @@ def update_teacher(teacher_id: int, **kwargs) -> Optional[Teacher]:
     
     # Update user fields if provided
     user_fields = ['username', 'email', 'first_name', 'last_name', 
-                  'birth_date', 'phone_number']
+                   'birth_date', 'phone_number', 'activated']
     for field in user_fields:
-        if field in kwargs:
+        if field in kwargs and kwargs[field] is not None:
             setattr(user, field, kwargs[field])
-    
-    # Update password if provided
-    if 'password' in kwargs:
+            if field == 'birth_date' and kwargs[field]: # Ensure birth_date is converted if string
+                from app.utils import format_date_to_obj
+                user.birth_date = format_date_to_obj(kwargs[field])
+
+
+    # Update password if provided and not empty
+    if 'password' in kwargs and kwargs['password']:
         user.password = generate_password_hash(kwargs['password'])
-    
+
+    # Update subjects
+    if 'subjects_id' in kwargs: # Note: form field is subjects_id, passed as subjects_id
+        subjects_ids = kwargs['subjects_id']
+        if subjects_ids is not None: # Check if it's explicitly provided (could be empty list)
+            teacher_subjects = Subject.query.filter(Subject.id.in_(subjects_ids)).all()
+            teacher.subjects = teacher_subjects
+        else: # If None, perhaps means no change or clear them
+            teacher.subjects = []
+
+
+    # Update classes
+    if 'classes_id' in kwargs: # Note: form field is classes_id, passed as classes_id
+        classes_ids = kwargs['classes_id']
+        if classes_ids is not None:
+            teacher_classes = Class.query.filter(Class.id.in_(classes_ids)).all()
+            teacher.classes = teacher_classes
+        else:
+            teacher.classes = []
+            
     db.session.commit()
     return teacher
 

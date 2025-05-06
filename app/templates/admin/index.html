@@ -6,46 +6,8 @@
     <title>Admin Panel</title>
 </head>
 <body>
-    <h2>Admin Panel</h2>
-    <h3>User Management</h3>
-    <h4>Create a new user</h4>
-    <article>
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            {{ create_user_form.csrf_token }}
-            <div class="">
-                {{ create_user_form.username.label(class="form-label") }}
-                {{ create_user_form.username(class="form-control") }}
-                {% for error in create_user_form.username.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="">
-                {{ create_user_form.password.label(class="form-label") }}
-                {{ create_user_form.password(class="form-control") }}
-                {% for error in create_user_form.password.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="">
-                {{ create_user_form.email.label(class="form-label") }}
-                {{ create_user_form.email(class="form-control") }}
-                {% for error in create_user_form.email.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="">
-                {{ create_user_form.role.label(class="form-label") }}
-                {{ create_user_form.role(class="form-control") }}
-                {% for error in create_user_form.role.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="">
-                
-            <div class="">
-                {{ create_user_form.submit(class="btn btn-primary") }}
-            </div>
-        </form>
-    </article>
+    {% include('admin/navbar.html') %}
+    <h2>Welcome back, {{current_user.username}}</h2>
+    <img src="{{url_for('static',filename=pfp_path)}}" alt="">
 </body>
 </html>

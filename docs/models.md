@@ -17,7 +17,7 @@ Represents a user account in the system.
 *   `last_name` (str): User's last name.
 *   `birth_date` (date): User's birth date.
 *   `phone_number` (str): User's phone number.
-*   `profile_picture_filename` (str): Filename of the user's profile picture. Stored in assets/profile_pictures.
+*   `profile_picture_filename` (str): Filename of the user's profile picture. Stored in static/assets/profile_pictures.
 *   `email_verified` (bool): Indicates if the user's email is verified.
 *   `email_verification_token` (str): Token for email verification.
 *   `email_verification_expiry` (datetime): Expiry time for the email verification token.

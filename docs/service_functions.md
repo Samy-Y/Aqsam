@@ -225,18 +225,15 @@ Sets the user's profile picture to the indicated filename stored in assets/profi
 
 Student services manage student-specific operations.
 
-### `create_student(username: str, password: str, role: str, email: str, first_name: str, last_name: str, birth_date: str, phone_number: str, class_id: Optional[int] = None) -> Student`
+### `create_student(username: str, password: str, email: str, first_name: str, last_name: str, birth_date: str, phone_number: str, class_id: Optional[int] = None) -> Student`
 
 Creates a new student.
-
-**⚠️ Warning:** Despite the `role` parameter, this function always sets the role to "student" in the `create_user` call.
 
 **Example:**
 ```python
 student = create_student(
     username="student1",
     password="secure_password",
-    role="student",  # This parameter is ignored and always set to "student"
     email="student@example.com",
     first_name="Jane",
     last_name="Smith",

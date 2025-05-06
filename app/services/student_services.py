@@ -7,7 +7,6 @@ from app.utils import format_date, format_date_to_obj
 
 def create_student(username: str, 
                    password: str,
-                   role: str,
                    email: str, 
                    first_name: str, 
                    last_name: str, 
