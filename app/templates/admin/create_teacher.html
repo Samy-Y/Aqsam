@@ -1,0 +1,40 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Create Teacher</h2>
+    <form method="post">
+        {{ form.csrf_token }}
+        <div>
+            {{ form.username.label }} {{ form.username }}
+        </div>
+        <div>
+            {{ form.password.label }} {{ form.password }}
+        </div>
+        <div>
+            {{ form.confirm_password.label }} {{ form.confirm_password }}
+        </div>
+        <div>
+            {{ form.email.label }} {{ form.email }}
+        </div>
+        <div>
+            {{ form.first_name.label }} {{ form.first_name }}
+        </div>
+        <div>
+            {{ form.last_name.label }} {{ form.last_name }}
+        </div>
+        <div>
+            {{ form.phone_number.label }} {{ form.phone_number }}
+        </div>
+        <div>
+            {{ form.date_of_birth.label }} {{ form.date_of_birth }}
+        </div>
+        <div>
+            {{ form.classes_id.label }} {{ form.classes_id }}
+        </div>
+        <div>
+            {{ form.subjects_id.label }} {{ form.subjects_id }}
+        </div>
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+{% endblock %}

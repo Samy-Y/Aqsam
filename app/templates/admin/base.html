@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <nav>
+        <h1>Admin Panel</h1>
+        <a href="{{url_for('admin.index')}}">Dashboard</a>
+        <a href="{{url_for('admin.view_users')}}">View Users</a>
+
+        <a href="{{url_for('admin.view_classes')}}">View Classes</a>
+        <a href="{{url_for('admin.create_class_view')}}">Create New Class</a>
+
+        <a href="{{url_for('admin.view_subjects')}}">View Subjects</a>
+        <a href="{{url_for('admin.create_subject_view')}}">Create New Subject</a>
+
+        <a href="{{url_for('admin.view_students')}}">View Students</a>
+        <a href="{{url_for('admin.create_student_view')}}">Create New Student</a>
+
+        <a href="{{url_for('admin.view_teachers')}}">View Teachers</a>
+        <a href="{{url_for('admin.create_teacher_view')}}">Create New Teacher</a>
+
+        <a href="{{url_for('auth.logout')}}">Logout</a>
+    </nav>
+    {% block body %}{% endblock %}
+    <!-- I read ts on stackoverflow, pretty sure it's outdated but eh -->
+</body>
+</html>

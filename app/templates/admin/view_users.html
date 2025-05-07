@@ -1,0 +1,59 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>View Users</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Birth Date</th>
+                <th>Phone Number</th>
+                <th>Profile Picture</th>
+                <th>Email-Verified</th>
+                <th>Activated (Deleted)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.email if user.email else 'Not Registered.'}}</td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.birth_date }}</td>
+                    <td>{{ user.phone_number }}</td>
+                    <td>
+                        {% if user.profile_picture_filename %}
+                            <img src="{{ url_for('static', filename='/assets/profile_pictures/'+user.profile_picture_filename) }}" alt="Profile Picture" style="width: 50px; height: 50px;">
+                        {% else %}
+                            No Profile Picture
+                        {% endif %}
+                        <form method="post" enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+                            <div hidden="hidden">
+                                {{ form.user_id (value=user.id) }}
+                            </div>
+                            {{ form.profile_picture }}
+                            {{ form.submit }}
+                        </form>
+                    </td>
+                    <td>{{ 'Yes' if user.email_verified else 'No' }}</td>
+                    <td>{{ 'Yes' if user.activated else 'No' }}</td>
+                    <td>
+                        {% if user.role == 'admin'%}
+                        Sorry! You gotta use the DB for that.
+                        {% else %}
+                        <a href="/admin/update_{{user.role}}/{{user.id}}">Edit</a>
+                        <a href="{{ url_for('admin.delete_user_view') }}">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+{% endblock %}

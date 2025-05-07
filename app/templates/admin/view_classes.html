@@ -1,0 +1,27 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>View Classes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Class Name</th>
+                <th>Level</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class in classes %}
+                <tr>
+                    <td>{{ class.id }}</td>
+                    <td>{{ class.name }}</td>
+                    <td>{{ class.level }}</td>
+                    <td>
+                        <a href="/admin/update_class/{{ class.id }}">Edit</a>
+                        <a href="/admin/delete_class/{{ class.id }}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

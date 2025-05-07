@@ -20,6 +20,10 @@ instance/school.db
 # === Config ===
 config.json
 
+# === Uploads and Profile Pictures ===
+app/static/assets/uploads
+app/static/assets/profile_pictures
+
 # === Flask Env Files ===
 .env
 *.env

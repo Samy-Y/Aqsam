@@ -68,14 +68,34 @@ def create_teacher(username: str,
     db.session.commit() # Commit once after all associations
     return new_teacher
 
-def update_teacher(teacher_id: int, **kwargs) -> Optional[Teacher]:
+def update_teacher(
+    teacher_id: int,
+    username: str = None,
+    password: str = None,
+    email: str = None,
+    first_name: str = None,
+    last_name: str = None,
+    birth_date: str = None,
+    phone_number: str = None,
+    activated: bool = None,
+    subjects_id: List[int] = None,
+    classes_id: List[int] = None
+) -> Optional[Teacher]:
     """
     Update teacher information.
     
     Args:
         teacher_id: ID of the teacher to update
-        **kwargs: Keyword arguments with fields to update. 
-                  Includes 'subjects_ids' and 'classes_ids' as lists of IDs.
+        username: New username
+        password: New password (plaintext, will be hashed!)
+        email: New email address
+        first_name: New first name
+        last_name: New last name
+        birth_date: New birth date as string 'YYYY-MM-DD'
+        phone_number: New phone number
+        activated: New activation status
+        subjects_id: List of subject IDs to assign
+        classes_id: List of class IDs to assign
         
     Returns:
         Updated Teacher object if found, None otherwise
@@ -87,38 +107,35 @@ def update_teacher(teacher_id: int, **kwargs) -> Optional[Teacher]:
     user = teacher.user
     
     # Update user fields if provided
-    user_fields = ['username', 'email', 'first_name', 'last_name', 
-                   'birth_date', 'phone_number', 'activated']
-    for field in user_fields:
-        if field in kwargs and kwargs[field] is not None:
-            setattr(user, field, kwargs[field])
-            if field == 'birth_date' and kwargs[field]: # Ensure birth_date is converted if string
-                from app.utils import format_date_to_obj
-                user.birth_date = format_date_to_obj(kwargs[field])
+    if username is not None:
+        user.username = username
+    if email is not None:
+        user.email = email
+    if first_name is not None:
+        user.first_name = first_name
+    if last_name is not None:
+        user.last_name = last_name
+    if phone_number is not None:
+        user.phone_number = phone_number
+    if activated is not None:
+        user.activated = activated
+    if birth_date is not None:
+        from app.utils import format_date_to_obj
+        user.birth_date = format_date_to_obj(birth_date)
 
+    # Update password if provided
+    if password:
+        user.password = generate_password_hash(password)
 
-    # Update password if provided and not empty
-    if 'password' in kwargs and kwargs['password']:
-        user.password = generate_password_hash(kwargs['password'])
+    # Update subjects if provided
+    if subjects_id is not None:
+        teacher_subjects = Subject.query.filter(Subject.id.in_(subjects_id)).all()
+        teacher.subjects = teacher_subjects
 
-    # Update subjects
-    if 'subjects_id' in kwargs: # Note: form field is subjects_id, passed as subjects_id
-        subjects_ids = kwargs['subjects_id']
-        if subjects_ids is not None: # Check if it's explicitly provided (could be empty list)
-            teacher_subjects = Subject.query.filter(Subject.id.in_(subjects_ids)).all()
-            teacher.subjects = teacher_subjects
-        else: # If None, perhaps means no change or clear them
-            teacher.subjects = []
-
-
-    # Update classes
-    if 'classes_id' in kwargs: # Note: form field is classes_id, passed as classes_id
-        classes_ids = kwargs['classes_id']
-        if classes_ids is not None:
-            teacher_classes = Class.query.filter(Class.id.in_(classes_ids)).all()
-            teacher.classes = teacher_classes
-        else:
-            teacher.classes = []
+    # Update classes if provided
+    if classes_id is not None:
+        teacher_classes = Class.query.filter(Class.id.in_(classes_id)).all()
+        teacher.classes = teacher_classes
             
     db.session.commit()
     return teacher

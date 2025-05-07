@@ -1,0 +1,13 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Create Subject</h2>
+    <form method="post">
+        {{ form.csrf_token }}
+        <div>
+            {{ form.name.label }} {{ form.name }}
+        </div>
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Update Student</h2>
+    <div>
+        <h4>{{student_usr.first_name}} {{student_usr.last_name}}</h4>        
+        <h5>Born: {{student_usr.birth_date}}</h5>
+        {% if student_usr.email %}
+        <h5>Email: {{student_usr.email}} ({% if student_usr.email_verified %} Verified {% else %} Unverified {% endif %})</h5>
+        {% else %}
+        <h5>Email: Not Registered</h5>
+        {% endif %}
+        <h5>Phone Number: {{student_usr.phone_number}}</h5>
+        {% if student_usr.profile_picture_filename %}
+            <img src="{{ url_for('static', filename='/assets/profile_pictures/'+student_usr.profile_picture_filename) }}" alt="Profile Picture" style="width: 50px; height: 50px;">
+        {% else %}
+            No Profile Picture
+        {% endif %}
+        <h5>Username: {{student_usr.username}}</h5>
+    </div>
+    <form method="post">
+        {{ form.csrf_token }}
+        {{ form.first_name.label }} {{ form.first_name }}<br>
+        {{ form.last_name.label }} {{ form.last_name }}<br>
+        {{ form.username.label }} {{ form.username }}<br>
+        {{ form.email.label }} {{ form.email }}<br>
+        {{ form.password.label }} {{ form.password }}<br>
+        {{ form.birth_date.label }} {{ form.birth_date }}<br>
+        {{ form.phone_number.label }} {{ form.phone_number }}<br>
+        {{ form.class_id.label }} {{ form.class_id }}<br>
+        <input type="submit" value="Update">
+    </form>
+{% endblock %}

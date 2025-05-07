@@ -1,12 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, DateField, SubmitField, SelectField, SelectMultipleField
+from wtforms import StringField, PasswordField, BooleanField, DateField, SubmitField, SelectField, SelectMultipleField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from flask_wtf.file import FileAllowed
 from app.models.user import User
 from app import db
 from typing import Optional
-from app.services.class_services import get_class_by_id, get_all_classes
-from app.services.subject_services import get_all_subjects
+from app.services.class_services import get_class_by_id, get_all_classes, get_class_by_name
+from app.services.subject_services import get_all_subjects, get_subject_by_name
+from app.models.teacher import Teacher
 import re
+
+# User-Related Forms
 
 class CreateUserForm(FlaskForm):
     """Form for creating a new user."""
@@ -57,6 +61,17 @@ class DeleteUserForm(FlaskForm):
         if not user:
             raise ValidationError('That username does not exist. Please choose a different one.')
 
+class ChangeUserProfilePictureForm(FlaskForm):
+    """Form for changing a user's profile picture through a file upload."""
+    
+    user_id = StringField('User ID', validators=[DataRequired()])
+    profile_picture = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'png', 'gif', 'heic'], 'Images only!')])
+    submit = SubmitField('Change Profile Picture')
+
+    def validate_profile_picture(self, profile_picture):
+        if not profile_picture.data:
+            raise ValidationError('No file selected. Please choose a file to upload.')
+
 # Class/Level-Related Forms
 
 class CreateClassForm(FlaskForm):
@@ -67,10 +82,10 @@ class CreateClassForm(FlaskForm):
     submit = SubmitField('Create Class')
 
     def validate_name(self, name):
-        from app.services.class_services import get_class_by_name
         existing_class = get_class_by_name(name.data)
         if existing_class:
-            raise ValidationError('A class with this name already exists.')
+            if existing_class.level == self.level.data:
+                raise ValidationError('A class with this name in the same level already exists.')
 
 class UpdateClassForm(FlaskForm):
     """Form for updating an existing class."""
@@ -82,8 +97,8 @@ class UpdateClassForm(FlaskForm):
     def validate_name(self, name):
         from app.services.class_services import get_class_by_name
         existing_class = get_class_by_name(name.data)
-        if existing_class and (not hasattr(self, '_original_obj') or self._original_obj.name != name.data):
-            raise ValidationError('A class with this name already exists.')
+        if existing_class and existing_class.level == self.level.data:
+                raise ValidationError('A class with this name in the same level already exists.')
 
 class DeleteClassForm(FlaskForm):
     """Form for deleting a class."""
@@ -95,21 +110,14 @@ class AssignTeacherForm(FlaskForm):
     """Form for assigning a teacher to a class."""
     
     class_id = SelectField('Class', coerce=int, validators=[DataRequired()])
-    teacher_id = SelectField('Teacher', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Assign Teacher')
 
     def __init__(self, *args, **kwargs):
         super(AssignTeacherForm, self).__init__(*args, **kwargs)
-        from app.services.class_services import get_all_classes
-        from app.models.teacher import Teacher
         
         # Populate class choices
         classes = get_all_classes()
         self.class_id.choices = [(c.id, f"{c.name} - {c.level}") for c in classes]
-        
-        # Populate teacher choices
-        teachers = Teacher.query.all()
-        self.teacher_id.choices = [(t.id, f"{t.user.first_name} {t.user.last_name}") for t in teachers]
 
 class RemoveTeacherForm(FlaskForm):
     """Form for removing a teacher from a class."""
@@ -120,8 +128,6 @@ class RemoveTeacherForm(FlaskForm):
     
     def __init__(self, *args, **kwargs):
         super(RemoveTeacherForm, self).__init__(*args, **kwargs)
-        from app.services.class_services import get_all_classes
-        from app.models.teacher import Teacher
         
         # Populate class choices
         classes = get_all_classes()
@@ -146,7 +152,7 @@ class ClassFilterForm(FlaskForm):
 
 # Student-Related Forms
 
-class CreateStudent(FlaskForm):
+class CreateStudentForm(FlaskForm):
     """Form for creating a new student."""
     
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -176,11 +182,11 @@ class CreateStudent(FlaskForm):
         if not class_:
             raise ValidationError('That class does not exist. Please choose a different one.')
         
-class UpdateStudent(FlaskForm):
+class UpdateStudentForm(FlaskForm):
     """Form for updating an existing student."""
     
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    password = PasswordField('New Password', validators=[Length(min=6)])
     email = StringField('Email', validators=[Email()])
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
@@ -189,9 +195,17 @@ class UpdateStudent(FlaskForm):
     class_id = SelectField('Class', coerce=int)
     submit = SubmitField('Update Student')
 
+    def __init__(self, original_username=None, *args, **kwargs):
+        super(UpdateStudentForm, self).__init__(*args, **kwargs)
+        
+        # Populate class choices
+        classes = get_all_classes()
+        self.class_id.choices = [(c.id, f"{c.name} - {c.level}") for c in classes]
+        self.original_username = original_username
+
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
-        if user:
+        if user and username != self.original_username:
             raise ValidationError('That username is already taken. Please choose a different one.')
 
     def validate_email(self, email):
@@ -202,10 +216,10 @@ class UpdateStudent(FlaskForm):
         class_ = get_class_by_id(class_id.data)
         if not class_:
             raise ValidationError('That class does not exist. Please choose a different one.')
-        
+
 # Teacher-Related Forms
 
-class CreateTeacher(FlaskForm):
+class CreateTeacherForm(FlaskForm):
     """Form for creating a new teacher."""
     
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -218,11 +232,10 @@ class CreateTeacher(FlaskForm):
     date_of_birth = DateField('Date of Birth', format='%Y-%m-%d')
     classes_id = SelectMultipleField('Classes', coerce=int, validators=[DataRequired()])
     subjects_id = SelectMultipleField('Subjects', coerce=int, validators=[DataRequired()])
-    activated = BooleanField('Activated', default=True)
     submit = SubmitField('Create Teacher')
 
     def __init__(self, *args, **kwargs):
-        super(CreateTeacher, self).__init__(*args, **kwargs)
+        super(CreateTeacherForm, self).__init__(*args, **kwargs)
         self.classes_id.choices = [(c.id, f"{c.name} - {c.level}") for c in get_all_classes()]
         self.subjects_id.choices = [(s.id, s.name) for s in get_all_subjects()]
 
@@ -241,11 +254,11 @@ class CreateTeacher(FlaskForm):
                 raise ValidationError('That email is already registered. Please choose a different one.')
         return True
 
-class UpdateTeacher(FlaskForm):
+class UpdateTeacherForm(FlaskForm):
     """Form for updating an existing teacher."""
     
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    password = PasswordField('New Password', validators=[Length(min=6)])
     email = StringField('Email', validators=[Email()])
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
@@ -253,11 +266,10 @@ class UpdateTeacher(FlaskForm):
     date_of_birth = DateField('Date of Birth', format='%Y-%m-%d')
     classes_id = SelectMultipleField('Classes', coerce=int)
     subjects_id = SelectMultipleField('Subjects', coerce=int)
-    activated = BooleanField('Activated')
     submit = SubmitField('Update Teacher')
 
     def __init__(self, original_username=None, original_email=None, *args, **kwargs):
-        super(UpdateTeacher, self).__init__(*args, **kwargs)
+        super(UpdateTeacherForm, self).__init__(*args, **kwargs)
         self.original_username = original_username
         self.original_email = original_email
         self.classes_id.choices = [(c.id, f"{c.name} - {c.level}") for c in get_all_classes()]
@@ -287,7 +299,6 @@ class CreateSubjectForm(FlaskForm):
     submit = SubmitField('Create Subject')
 
     def validate_name(self, name):
-        from app.services.subject_services import get_subject_by_name
         subject = get_subject_by_name(name.data)
         if subject:
             raise ValidationError('That subject name already exists. Please choose a different one.')
@@ -303,10 +314,9 @@ class UpdateSubjectForm(FlaskForm):
 
     def validate_name(self, name):
         if name.data != self.original_name:
-            from app.services.subject_services import get_subject_by_name
             subject = get_subject_by_name(name.data)
             if subject:
-                raise ValidationError('That subject name already exists. Please choose a different one.')
+                raise ValidationError('That subject name '+ name.data +' already exists. Please choose a different one.')
 
 class DeleteSubjectForm(FlaskForm):
     """Form for deleting a subject."""

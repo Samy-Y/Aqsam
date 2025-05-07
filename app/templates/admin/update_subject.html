@@ -1,0 +1,16 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Update Subject</h2>
+    <form method="post">
+        {{ form.csrf_token }}
+        {% for error in form.errors.keys() %}
+            {{form.errors[error][0]}}
+        {% endfor %}
+        <div>
+            {{ form.name.label }}{{ form.name }}
+        </div>
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+{% endblock %}

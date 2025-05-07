@@ -14,10 +14,9 @@ def create_writer(username: Optional[str] = None,
                   birth_date: Optional[str] = None,
                   phone_number: Optional[str] = None) -> Writer:
     """Create a new writer."""
-    hashed_password = generate_password_hash(password)
     new_user = create_user(
         username=username,
-        password=hashed_password,
+        password=password, # Pass as plain text, will be hashed in user_services
         role="writer",
         email=email,
         first_name=first_name,

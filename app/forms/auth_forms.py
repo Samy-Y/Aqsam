@@ -8,3 +8,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+
+    def validate_user_activation(self, field):
+        user = User.query.filter_by(username=self.username.data).first()
+        if user and not user.activated:
+            raise ValidationError('This user does not exist or is not activated.')

@@ -1,0 +1,10 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Create New Class</h2>
+    <form method="post">
+        {{ form.csrf_token }}
+        {{ form.name.label }} {{ form.name }}<br>
+        {{ form.level.label }} {{ form.level }}<br>
+        <input type="submit" value="Create">
+    </form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Delete Subject</h2>
+    <form method="post">
+        {{ form.csrf_token }}
+        <div>
+            {{ form.confirm_delete.label }}
+            {{ form.confirm_delete }}
+        </div>
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+{% endblock %}

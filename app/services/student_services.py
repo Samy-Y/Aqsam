@@ -15,10 +15,9 @@ def create_student(username: str,
                    class_id: Optional[int] = None) -> Student:
                     # i cannot believe there isn't a easier way than Optional[int] = None
     """Create a new student."""
-    hashed_password = generate_password_hash(password)
     new_user = create_user(
         username=username,
-        password=hashed_password,
+        password=password, # Will be hashed in create_user
         role="student",
         email=email,
         first_name=first_name,
@@ -49,6 +48,7 @@ def update_student(student_id: int,
                    class_id: Optional[int] = None) -> Student:
     """Update a student's information.
     All parameters are optional. Birth date should be in the format 'YYYY-MM-DD'.
+    Password will be hashed. Pass as plaintext.
     """
     student = Student.query.get(student_id)
     if not student:
@@ -75,3 +75,14 @@ def update_student(student_id: int,
 def get_all_student_by_class_id(class_id: int) -> List[Student]:
     """Get all students in a specific class."""
     return Student.query.filter_by(class_id=class_id).all()
+
+def get_student_by_id(student_id: int) -> Optional[Student]:
+    """Get a student by their User-ID."""
+    return Student.query.get(student_id)
+
+def get_student_class_id_by_id(student_id: int) -> Optional[int]:
+    """Get the class ID of a student by their ID."""
+    student = get_student_by_id(student_id)
+    if student:
+        return student.class_id
+    return None
