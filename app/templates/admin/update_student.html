@@ -19,6 +19,9 @@
     </div>
     <form method="post">
         {{ form.csrf_token }}
+        <div hidden="hidden">
+            {{ form.original_username (value=student_usr.username) }}
+        </div>
         {{ form.first_name.label }} {{ form.first_name }}<br>
         {{ form.last_name.label }} {{ form.last_name }}<br>
         {{ form.username.label }} {{ form.username }}<br>
@@ -26,7 +29,7 @@
         {{ form.password.label }} {{ form.password }}<br>
         {{ form.birth_date.label }} {{ form.birth_date }}<br>
         {{ form.phone_number.label }} {{ form.phone_number }}<br>
-        {{ form.class_id.label }} {{ form.class_id }}<br>
+        {{ form.class_id.label }} {{ form.class_id(value=student_obj.class_id) }}<br>
         <input type="submit" value="Update">
     </form>
 {% endblock %}

@@ -48,9 +48,9 @@ def get_users_by_role(role: str) -> List[User]:
     """Get all users with a specific role."""
     return User.query.filter_by(role=role).all()
 
-def delete_user(user: User) -> bool:
+def delete_user(user_id: int) -> bool:
     """Soft delete a user by setting activated to False."""
-    user.activated = False
+    get_user_by_id(user_id=user_id).activated = False
     db.session.commit()
     return True
 
@@ -147,19 +147,6 @@ def activate_user(user: User) -> bool:
         True if successful
     """
     user.activated = True
-    db.session.commit()
-    return True
-
-def deactivate_user(user: User) -> bool:
-    """Deactivate a user account.
-    
-    Args:
-        user: The user to deactivate
-        
-    Returns:
-        True if successful
-    """
-    user.activated = False
     db.session.commit()
     return True
 

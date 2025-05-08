@@ -1,0 +1,16 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Delete Article: {{ article.title }}</h2>
+    <p>Are you sure you want to delete this article? This action cannot be undone.</p>
+    <form method="POST" action="{{ url_for('admin.delete_article_view', id=article.id) }}">
+        {{ form.csrf_token }}
+        <p>
+            {{ form.confirm_delete.label }} {{ form.confirm_delete }}<br>
+            {% for error in form.confirm_delete.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit(label='Delete Article Permanently') }}</p>
+        <a href="{{ url_for('admin.view_articles') }}">Cancel</a>
+    </form>
+{% endblock %}

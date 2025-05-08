@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Panel</title>
+</head>
+<body>
+    <nav>
+        <h1>Student Panel</h1>
+        <a href="{{url_for('student.index')}}">Dashboard</a>
+        <a href="{{url_for('student.assignments')}}">Assignments</a>
+        <a href="{{url_for('student.grades')}}">Grades</a>
+        <a href="{{url_for('student.profile')}}">Profile</a>
+        <a href="{{url_for('auth.logout')}}">Logout</a>
+    </nav>
+    {% block body %}{% endblock %}
+    <!-- I read ts on stackoverflow, pretty sure it's outdated but eh -->
+</body>
+</html>

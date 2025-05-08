@@ -1,6 +1,7 @@
 {% extends('admin/base.html') %}
 {% block body %}
     <h2>Create Teacher</h2>
+    {{ form.errors }}
     <form method="post">
         {{ form.csrf_token }}
         <div>

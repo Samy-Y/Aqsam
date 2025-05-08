@@ -52,7 +52,7 @@ def create_teacher(username: str,
     new_user.activated = activated # Set activation status for user
 
     # Create a new teacher record
-    new_teacher = Teacher(user_id=new_user.id) # Link by user_id
+    new_teacher = Teacher(id=new_user.id) # Link by user_id
     db.session.add(new_teacher)
 
     # Add subjects if provided

@@ -10,19 +10,25 @@
         <h1>Admin Panel</h1>
         <a href="{{url_for('admin.index')}}">Dashboard</a>
         <a href="{{url_for('admin.view_users')}}">View Users</a>
-
+        <br>
         <a href="{{url_for('admin.view_classes')}}">View Classes</a>
         <a href="{{url_for('admin.create_class_view')}}">Create New Class</a>
-
+        <br>
         <a href="{{url_for('admin.view_subjects')}}">View Subjects</a>
         <a href="{{url_for('admin.create_subject_view')}}">Create New Subject</a>
-
+        <br>
         <a href="{{url_for('admin.view_students')}}">View Students</a>
         <a href="{{url_for('admin.create_student_view')}}">Create New Student</a>
-
+        <br>
         <a href="{{url_for('admin.view_teachers')}}">View Teachers</a>
         <a href="{{url_for('admin.create_teacher_view')}}">Create New Teacher</a>
-
+        <br>
+        <a href="{{url_for('admin.view_writers')}}">View Writers</a>
+        <a href="{{url_for('admin.create_writer_view')}}">Create New Writer</a>
+        <br>
+        <a href="{{url_for('admin.view_articles')}}">View Articles</a>
+        <a href="{{url_for('admin.create_article_view')}}">Create New Article</a>
+        <br>
         <a href="{{url_for('auth.logout')}}">Logout</a>
     </nav>
     {% block body %}{% endblock %}

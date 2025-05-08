@@ -49,3 +49,11 @@ def delete_article(article_id: int) -> bool:
     db.session.delete(article)
     db.session.commit()
     return True
+
+def get_all_articles() -> List[Article]:
+    """Get all articles."""
+    return Article.query.all()
+
+def get_article_by_id(article_id: int) -> Optional[Article]:
+    """Get an article by its ID."""
+    return Article.query.get(article_id)

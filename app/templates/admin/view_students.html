@@ -1,0 +1,69 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>View Students</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Birth Date</th>
+                <th>Phone Number</th>
+                <th>Profile Picture</th>
+                <th>Activated</th>
+                <th>Class</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student_user in students %}
+                <tr>
+                    <td>{{ student_user.id }}</td>
+                    <td>{{ student_user.username }}</td>
+                    <td>{{ student_user.email if student_user.email else 'N/A' }}</td>
+                    <td>{{ student_user.first_name }} {{ student_user.last_name }}</td>
+                    <td>{{ student_user.birth_date.strftime('%Y-%m-%d') if student_user.birth_date else 'N/A' }}</td>
+                    <td>{{ student_user.phone_number if student_user.phone_number else 'N/A' }}</td>
+                    <td>
+                        {% if student_user.profile_picture_filename %}
+                            <img src="{{ url_for('static', filename='assets/profile_pictures/' + student_user.profile_picture_filename) }}" alt="Profile Picture" style="width: 50px; height: 50px;">
+                        {% else %}
+                            No Picture
+                        {% endif %}
+                        <form method="post" enctype="multipart/form-data" action="{{ url_for('admin.view_students') }}">
+                            {{ form.csrf_token }}
+                            <div hidden="hidden">
+                                {{ form.user_id(value=student_user.id) }}
+                            </div>
+                            {{ form.profile_picture }}<br>
+                            {{ form.submit }}
+                            {% if form.profile_picture.errors %}
+                                <ul class="errors">
+                                    {% for error in form.profile_picture.errors %}<li>{{ error }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if form.user_id.errors %}
+                                <ul class="errors">
+                                    {% for error in form.user_id.errors %}<li>{{ error }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                        </form>
+                    </td>
+                    <td>{{ 'Yes' if student_user.activated else 'No' }}</td>
+                    <td>
+                        {% if student_classes[student_user.id] %}
+                            {{ student_classes[student_user.id] }}
+                        {% else %}
+                            No Class Assigned
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.update_student_view', id=student_user.id) }}">Edit</a>
+                        <a href="{{ url_for('admin.delete_user_view') }}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

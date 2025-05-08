@@ -1,0 +1,35 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Manage Articles</h2>
+    <a href="{{ url_for('admin.create_article_view') }}">Create New Article</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Created At</th>
+                <th>Last Edited</th>
+                <th>Published</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.id }}</td>
+                <td><a href="{{ url_for('admin.update_article_view', id=article.id) }}">{{ article.title }}</a></td>
+                <td>{{ article.author.user.username if article.author and article.author.user else 'N/A' }}</td>
+                <td>{{ article.created_at.strftime('%Y-%m-%d %H:%M') if article.created_at else 'N/A' }}</td>
+                <td>{{ article.last_edited.strftime('%Y-%m-%d %H:%M') if article.last_edited else 'N/A' }}</td>
+                <td>{{ 'Yes' if article.is_published else 'No' }}</td>
+                <td>
+                    <a href="" target="_blank">View Public</a>
+                    <a href="{{ url_for('admin.update_article_view', id=article.id) }}">Edit</a>
+                    <a href="{{ url_for('admin.delete_article_view', id=article.id) }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

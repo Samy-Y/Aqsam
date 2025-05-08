@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, DateField, SubmitField, SelectField, SelectMultipleField, FileField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional
 from flask_wtf.file import FileAllowed
+from wtforms.widgets import TextArea
 from app.models.user import User
 from app import db
-from typing import Optional
 from app.services.class_services import get_class_by_id, get_all_classes, get_class_by_name
 from app.services.subject_services import get_all_subjects, get_subject_by_name
 from app.models.teacher import Teacher
@@ -158,7 +158,7 @@ class CreateStudentForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    email = StringField('Email', validators=[Email()])
+    email = StringField('Email')
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
     birth_date = DateField('Date of Birth', format='%Y-%m-%d')
@@ -166,18 +166,29 @@ class CreateStudentForm(FlaskForm):
     class_id = SelectField('Class', coerce=int)
     submit = SubmitField('Create Student')
 
+    def __init__(self, *args, **kwargs):
+        super(CreateStudentForm, self).__init__(*args, **kwargs)
+        self.class_id.choices = [(c.id, f"{c.name} - {c.level}") for c in get_all_classes()]
+        self.class_id.choices.insert(0, (0, "Select Class"))  # Add a default option
+
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
             raise ValidationError('That username is already taken. Please choose a different one.')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValidationError('That email is already registered. Please choose a different one.')
+        if email.data:
+            # regex code to check email format
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email.data):
+                raise ValidationError('Invalid email format. Please enter a valid email address.')
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is already registered. Please choose a different one.')
+        return True
         
     def validate_class_id(self, class_id):
-        from app.services.class_services import get_class_by_id
+        if class_id.data == 0:
+            raise ValidationError('Please select a class.')
         class_ = get_class_by_id(class_id.data)
         if not class_:
             raise ValidationError('That class does not exist. Please choose a different one.')
@@ -185,9 +196,10 @@ class CreateStudentForm(FlaskForm):
 class UpdateStudentForm(FlaskForm):
     """Form for updating an existing student."""
     
+    original_username = StringField('Hidden Username', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('New Password', validators=[Length(min=6)])
-    email = StringField('Email', validators=[Email()])
+    password = PasswordField('New Password')
+    email = StringField('Email')
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
     birth_date = DateField('Date of Birth', format='%Y-%m-%d')
@@ -195,23 +207,23 @@ class UpdateStudentForm(FlaskForm):
     class_id = SelectField('Class', coerce=int)
     submit = SubmitField('Update Student')
 
-    def __init__(self, original_username=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(UpdateStudentForm, self).__init__(*args, **kwargs)
         
         # Populate class choices
         classes = get_all_classes()
         self.class_id.choices = [(c.id, f"{c.name} - {c.level}") for c in classes]
-        self.original_username = original_username
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
-        if user and username != self.original_username:
+        if user and username.data != self.original_username.data:
             raise ValidationError('That username is already taken. Please choose a different one.')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
-        if user:
+        if user and email.data:
             raise ValidationError('That email is already registered. Please choose a different one.')
+    
     def validate_class_id(self, class_id):
         class_ = get_class_by_id(class_id.data)
         if not class_:
@@ -225,7 +237,7 @@ class CreateTeacherForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    email = StringField('Email', validators=[Email()])
+    email = StringField('Email')
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
     phone_number = StringField('Phone Number')
@@ -291,6 +303,103 @@ class UpdateTeacherForm(FlaskForm):
         return True
     
 # Article-Related Forms
+class CreateWriterForm(FlaskForm):
+    """Form for creating a new writer."""
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    email = StringField('Email')
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
+    phone_number = StringField('Phone Number')
+    activated = BooleanField('Activated', default=True)
+    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d')
+    submit = SubmitField('Create Writer')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('That username is already taken. Please choose a different one.')
+
+    def validate_email(self, email):
+        if email.data:
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email.data):
+                raise ValidationError('Invalid email format. Please enter a valid email address.')
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is already registered. Please choose a different one.')
+        return True
+
+class UpdateWriterForm(FlaskForm):
+    """Form for updating an existing writer."""
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('New Password', validators=[Length(min=6)]) 
+    email = StringField('Email') 
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
+    phone_number = StringField('Phone Number') 
+    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d') 
+    activated = BooleanField('Activated')
+    submit = SubmitField('Update Writer')
+
+    def __init__(self, original_username=None, original_email=None, *args, **kwargs):
+        super(UpdateWriterForm, self).__init__(*args, **kwargs)
+        self.original_username = original_username
+        self.original_email = original_email
+
+    def validate_username(self, username):
+        if username.data != self.original_username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError('That username is already taken. Please choose a different one.')
+
+    def validate_email(self, email):
+        if email.data and email.data != self.original_email:
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email.data):
+                raise ValidationError('Invalid email format. Please enter a valid email address.')
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is already registered. Please choose a different one.')
+        return True
+
+class CreateArticleForm(FlaskForm):
+    """Form for creating a new article."""
+    title = StringField('Title', validators=[DataRequired(), Length(min=5, max=200)])
+    author_id = SelectField('Author', coerce=int, validators=[DataRequired()])
+    content_md = StringField('Content (Markdown)', widget=TextArea(), validators=[DataRequired()]) # Using StringField with TextArea widget
+    is_published = BooleanField('Publish Immediately?', default=False)
+    submit = SubmitField('Create Article')
+
+    def __init__(self, *args, **kwargs):
+        super(CreateArticleForm, self).__init__(*args, **kwargs)
+        # Populate author choices with users who are writers
+        writers = User.query.filter_by(role='writer').all()
+        self.author_id.choices = [(writer.id, writer.username) for writer in writers]
+        if not self.author_id.choices:
+            self.author_id.choices = [(0, "No writers available - create a writer first")]
+
+
+class UpdateArticleForm(FlaskForm):
+    """Form for updating an existing article."""
+    title = StringField('Title', validators=[DataRequired(), Length(min=5, max=200)])
+    author_id = SelectField('Author', coerce=int, validators=[DataRequired()])
+    content_md = StringField('Content (Markdown)', widget=TextArea(), validators=[DataRequired()]) # Using StringField with TextArea widget
+    is_published = BooleanField('Is Published?')
+    submit = SubmitField('Update Article')
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateArticleForm, self).__init__(*args, **kwargs)
+        writers = User.query.filter_by(role='writer').all()
+        self.author_id.choices = [(writer.id, writer.username) for writer in writers]
+        if not self.author_id.choices:
+            self.author_id.choices = [(0, "No writers available")]
+
+
+class DeleteArticleForm(FlaskForm):
+    """Form for deleting an article."""
+    confirm_delete = BooleanField('I confirm I want to delete this article', validators=[DataRequired()])
+    submit = SubmitField('Delete Article')
+
 
 # Subject Management Forms
 class CreateSubjectForm(FlaskForm):

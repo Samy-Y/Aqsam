@@ -1,0 +1,63 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>Manage Writers</h2>
+    <a href="{{ url_for('admin.create_writer_view') }}">Create New Writer</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>PFP</th>
+                <th>Activated</th>
+                <th>Articles Authored</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for writer_user in writers %}
+            <tr>
+                <td>{{ writer_user.id }}</td>
+                <td>{{ writer_user.username }}</td>
+                <td>{{ writer_user.email if writer_user.email else 'N/A' }}</td>
+                <td>{{ writer_user.first_name }} {{ writer_user.last_name }}</td>
+                <td>
+                    {% if writer_user.profile_picture_filename %}
+                        <img src="{{ url_for('static', filename='assets/profile_pictures/' + writer_user.profile_picture_filename) }}" alt="PFP" style="width:50px; height:auto;">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data" action="{{ url_for('admin.view_writers') }}">
+                        {{ form.csrf_token }}
+                        <div hidden="hidden">{{ form.user_id(value=writer_user.id) }}</div>
+                        {{ form.profile_picture() }}
+                        {{ form.submit() }}
+                    </form>
+                </td>
+                <td>{{ 'Yes' if writer_user.activated else 'No' }}</td>
+                <td>
+                    <ul>
+                    {% if writer_user.writer and writer_user.writer.articles %}
+                        {% for article in writer_user.writer.articles %}
+                            <li>
+                                <a href="{{ url_for('admin.update_article_view', id=article.id) }}">{{ article.title }}</a>
+                                (<a href="{{ url_for('main.view_article_publicly', article_id=article.id) }}" target="_blank">View Public</a>)
+                            </li>
+                        {% else %}
+                            No articles yet.
+                        {% endfor %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                    </ul>
+                </td>
+                <td>
+                    <a href="{{ url_for('admin.update_writer_view', id=writer_user.id) }}">Edit</a>
+                    <a href="{{ url_for('admin.delete_user_view', username=writer_user.username) }}">Delete</a> {# Assumes delete_user_view can handle this by username #}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

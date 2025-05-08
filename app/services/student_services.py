@@ -68,7 +68,8 @@ def update_student(student_id: int,
     if phone_number:
         student.user.phone_number = phone_number
     if class_id:
-        student.class_id = class_id
+        student_obj = Student.query.get(student_id)
+        student_obj.class_id = class_id
     db.session.commit()
     return student
     
@@ -84,5 +85,5 @@ def get_student_class_id_by_id(student_id: int) -> Optional[int]:
     """Get the class ID of a student by their ID."""
     student = get_student_by_id(student_id)
     if student:
-        return student.class_id
+        return student.class_id if student.class_id else None
     return None

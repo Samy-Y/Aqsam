@@ -1,0 +1,77 @@
+{% extends('admin/base.html') %}
+{% block body %}
+    <h2>View Teachers</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Birth Date</th>
+                <th>Phone Number</th>
+                <th>Profile Picture</th>
+                <th>Activated</th>
+                <th>Classes</th>
+                <th>Subjects</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teacher_user in teachers %}
+                <tr>
+                    <td>{{ teacher_user.id }}</td>
+                    <td>{{ teacher_user.username }}</td>
+                    <td>{{ teacher_user.email if teacher_user.email else 'N/A' }}</td>
+                    <td>{{ teacher_user.first_name }} {{ teacher_user.last_name }}</td>
+                    <td>{{ teacher_user.birth_date.strftime('%Y-%m-%d') if teacher_user.birth_date else 'N/A' }}</td>
+                    <td>{{ teacher_user.phone_number if teacher_user.phone_number else 'N/A' }}</td>
+                    <td>
+                        {% if teacher_user.profile_picture_filename %}
+                            <img src="{{ url_for('static', filename='assets/profile_pictures/' + teacher_user.profile_picture_filename) }}" alt="Profile Picture" style="width: 50px; height: 50px;">
+                        {% else %}
+                            No Picture
+                        {% endif %}
+                        <form method="post" enctype="multipart/form-data" action="{{ url_for('admin.view_teachers') }}">
+                            {{ form.csrf_token }}
+                            <div hidden="hidden">
+                                {{ form.user_id(value=teacher_user.id) }}
+                            </div>
+                            {{ form.profile_picture }}<br>
+                            {{ form.submit }}
+                            {% if form.profile_picture.errors %}
+                                <ul class="errors">
+                                    {% for error in form.profile_picture.errors %}<li>{{ error }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                        </form>
+                    </td>
+                    <td>{{ 'Yes' if teacher_user.activated else 'No' }}</td>
+                    <td>
+                        {% if teacher_classes[teacher_user.id] %}
+                            {% for class_string in teacher_classes[teacher_user.id] %}
+                                {{ class_string }}{% if not loop.last %}; {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if teacher_user.teacher and teacher_user.teacher.subjects %}
+                            {% for subject_obj in teacher_user.teacher.subjects %}
+                                {{ subject_obj.name }}{% if not loop.last %}; {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.update_teacher_view', id=teacher_user.id) }}">Edit</a>
+                        {# This delete link goes to a page with a form, not a direct delete action #}
+                        <a href="{{ url_for('admin.delete_user_view') }}">Delete</a> 
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
