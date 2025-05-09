@@ -38,8 +38,28 @@ def create_app():
     config_path = os.path.join(os.path.dirname(__file__), '..', 'config.json')
     if not os.path.exists(config_path):
         with open(config_path, 'w') as f:
-            default_cfg = {"language": "en", "SECRET_KEY": "super-secret-dev-key", "DATABASE_URI": "sqlite:///../instance/school.db", "first_load": True}
+            default_cfg = {"language": "en", 
+                           "SECRET_KEY": "super-secret-dev-key", 
+                           "DATABASE_URI": "sqlite:///../instance/school.db", 
+                           "first_load": True}
             json.dump(default_cfg, f)
+
+    # Create the school_info.json file if it doesn't exist
+    school_info_path = os.path.join(os.path.dirname(__file__), '..', 'school_info.json')
+    if not os.path.exists(school_info_path):
+        with open(school_info_path, 'w') as f:
+            default_school_info = {"school_name": "Pardefaut", 
+                                   "school_address": "123 Main St.", 
+                                   "school_phone": "01-2345-6789", 
+                                   "school_email": "contact@pardefaut.com",
+                                   "school_website": "www.pardefaut.com",
+                                   "school_logo": "static/assets/uploads/logo.png"}
+            json.dump(default_school_info, f)
+
+    school_info = {}
+
+    with open(school_info_path) as f:
+        school_info = json.load(f)
 
     # Load config
     with open(config_path) as f:
@@ -71,6 +91,7 @@ def create_app():
         return render_template('index.html')
 
     migrate.init_app(app, db)
+
     print("[INFO] Database migration initialized.")
     # Create the database if it doesn't exist
     if not os.path.exists(os.path.join(os.path.dirname(__file__), '..', 'instance', 'school.db')) and config.get('first_load'):
@@ -88,6 +109,7 @@ def create_app():
                 print("[INFO] Admin user created.")
             else:
                 print("[INFO] Admin user already exists.")
+                
     config['first_load'] = False
     with open(config_path, 'w') as f:
         json.dump(config, f)

@@ -1,0 +1,94 @@
+{% extends('admin/base.html') %}
+
+{% block body %}
+    <h2>School Settings</h2>
+    {% if school_info.school_logo %}
+        <div>
+            <h3>Current School Logo:</h3>
+            {% set logo_url = school_info.school_logo %}
+            {% if 'static/' in school_info.school_logo %}
+                 {% set logo_url = url_for('static', filename=school_info.school_logo.replace('static/', '')[1]) %}
+            {% endif %}
+            <img src="{{ logo_url }}" alt="School Logo" style="max-width: 200px; max-height: 200px; margin-bottom: 20px;">
+        </div>
+    {% else %}
+        <p>No school logo uploaded yet.</p>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+
+        <p>
+            {{ form.school_name.label }}<br>
+            {{ form.school_name(size=50) }}<br>
+            {% if form.school_name.errors %}
+                {% for error in form.school_name.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.school_address.label }}<br>
+            {{ form.school_address(size=50) }}<br>
+            {% if form.school_address.errors %}
+                {% for error in form.school_address.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.school_phone.label }}<br>
+            {{ form.school_phone(size=30) }}<br>
+            {% if form.school_phone.errors %}
+                {% for error in form.school_phone.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.school_email.label }}<br>
+            {{ form.school_email(size=50) }}<br>
+            {% if form.school_email.errors %}
+                {% for error in form.school_email.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.school_website.label }}<br>
+            {{ form.school_website(size=50) }}<br>
+            {% if form.school_website.errors %}
+                {% for error in form.school_website.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.school_logo.label }} (Leave blank to keep current logo)<br>
+            {{ form.school_logo }}<br>
+            {% if form.school_logo.errors %}
+                {% for error in form.school_logo.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <h3>Current School Information (from JSON):</h3>
+    <ul>
+        <li><strong>Name:</strong> {{ school_info.get('school_name', 'Not set') }}</li>
+        <li><strong>Address:</strong> {{ school_info.get('school_address', 'Not set') }}</li>
+        <li><strong>Phone:</strong> {{ school_info.get('school_phone', 'Not set') }}</li>
+        <li><strong>Email:</strong> {{ school_info.get('school_email', 'Not set') }}</li>
+        <li><strong>Website:</strong> {{ school_info.get('school_website', 'Not set') }}</li>
+        <li><strong>Logo Path (raw):</strong> {{ school_info.get('school_logo', 'Not set') }}</li>
+    </ul>
+
+{% endblock %}

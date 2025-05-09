@@ -431,3 +431,23 @@ class DeleteSubjectForm(FlaskForm):
     """Form for deleting a subject."""
     confirm_delete = BooleanField('I confirm I want to delete this subject', validators=[DataRequired()])
     submit = SubmitField('Delete Subject')
+
+
+# School Settings Forms
+
+class SchoolSettingsForm(FlaskForm):
+    """Form for updating school settings."""
+    school_name = StringField('School Name', validators=[DataRequired(), Length(min=2, max=100)])
+    school_address = StringField('School Address', validators=[DataRequired(), Length(min=2, max=200)])
+    school_phone = StringField('School Phone', validators=[DataRequired(), Length(min=10, max=15)])
+    school_email = StringField('School Email', validators=[DataRequired(), Email()])
+    school_website = StringField('School Website', validators=[Optional(), Length(max=200)])
+    school_logo = FileField('School Logo', validators=[FileAllowed(['jpg', 'png', 'gif'], 'Images only!')])
+    submit = SubmitField('Update Settings')
+
+    def validate_email(self, email):
+        if email.data:
+            # regex code to check email format
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email.data):
+                raise ValidationError('Invalid email format. Please enter a valid email address.')
+        return True

@@ -10,11 +10,13 @@ from app.services.subject_services import update_subject, get_subject_by_id, cre
 from app.routes.auth import current_user
 from app.utils import format_date
 from werkzeug.utils import secure_filename
-import os
+import os, json
+from flask_login import login_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
     pfp_path = 'assets/profile_pictures/' + current_user.profile_picture_filename
     return render_template('admin/index.html',pfp_path=pfp_path)
@@ -25,6 +27,7 @@ def index():
 
 # ---- USER VIEW ----
 @admin_bp.route('/view_users', methods=['GET', 'POST'])
+@login_required
 def view_users():
     pfp_form = ChangeUserProfilePictureForm()
     if pfp_form.validate_on_submit():
@@ -91,6 +94,7 @@ def view_users():
 
 # ---- USER CREATION ----
 @admin_bp.route('/create_user', methods=['GET', 'POST'])
+@login_required
 def create_user_view():
     form = CreateUserForm()
     if form.validate_on_submit():
@@ -122,6 +126,7 @@ def create_user_view():
 
 # ---- USER DELETION ----
 @admin_bp.route('/delete_user', methods=['GET', 'POST'])
+@login_required
 def delete_user_view():
     form = DeleteUserForm()
     if form.validate_on_submit():
@@ -139,12 +144,14 @@ def delete_user_view():
 
 # ---- CLASS VIEW ----
 @admin_bp.route('/view_classes', methods=['GET', 'POST'])
+@login_required
 def view_classes():
     classes = get_all_classes()
     return render_template('admin/view_classes.html', classes=classes)
 
 # ---- CLASS CREATION ----
 @admin_bp.route('/create_class', methods=['GET', 'POST'])
+@login_required
 def create_class_view():
     form = CreateClassForm()
     if form.validate_on_submit():
@@ -159,6 +166,7 @@ def create_class_view():
 
 # ---- CLASS UPDATE ----
 @admin_bp.route('/update_class/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_class_view(id):
     form = UpdateClassForm()
     class_obj = get_class_by_id(id)
@@ -177,6 +185,7 @@ def update_class_view(id):
 
 # ---- CLASS DELETION ----
 @admin_bp.route('/delete_class/<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_class_view(id):
     form = DeleteClassForm()
     if form.validate_on_submit():
@@ -193,6 +202,7 @@ def delete_class_view(id):
 
 # ---- STUDENT VIEW ----
 @admin_bp.route('/view_students', methods=['GET', 'POST'])
+@login_required
 def view_students():
     pfp_form = ChangeUserProfilePictureForm()  # Instantiate the PFP form
 
@@ -268,6 +278,7 @@ def view_students():
 
 # ---- STUDENT CREATION ----
 @admin_bp.route('/create_student', methods=['GET', 'POST'])
+@login_required
 def create_student_view():
     form = CreateStudentForm()
     if form.validate_on_submit():
@@ -292,6 +303,7 @@ def create_student_view():
 
 # ---- STUDENT UPDATE ----
 @admin_bp.route('/update_student/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_student_view(id):
     form = UpdateStudentForm()
     student_usr = get_user_by_id(id)
@@ -339,12 +351,14 @@ def update_student_view(id):
 
 # ---- SUBJECT VIEW ----
 @admin_bp.route('/view_subjects', methods=['GET', 'POST'])
+@login_required
 def view_subjects():
     subjects = get_all_subjects()
     return render_template('admin/view_subjects.html', subjects=subjects)
 
 # ---- SUBJECT CREATION ----
 @admin_bp.route('/create_subject', methods=['GET', 'POST'])
+@login_required
 def create_subject_view():
     form = CreateSubjectForm()
     if form.validate_on_submit():
@@ -356,6 +370,7 @@ def create_subject_view():
 
 # ---- SUBJECT UPDATE ----
 @admin_bp.route('/update_subject/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_subject_view(id):
     form = UpdateSubjectForm()
     subject_obj = get_subject_by_id(id)
@@ -374,6 +389,7 @@ def update_subject_view(id):
 
 # ---- SUBJECT DELETE ----
 @admin_bp.route('/delete_subject/<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_subject_view(id):
     form = DeleteSubjectForm()
     if form.validate_on_submit():
@@ -390,6 +406,7 @@ def delete_subject_view(id):
 
 # ---- TEACHER VIEW ----
 @admin_bp.route('/view_teachers', methods=['GET', 'POST'])
+@login_required
 def view_teachers():
     pfp_form = ChangeUserProfilePictureForm() # Instantiate the form
     if pfp_form.validate_on_submit():
@@ -443,6 +460,7 @@ def view_teachers():
 
 # ---- TEACHER CREATION ----
 @admin_bp.route('/create_teacher', methods=['GET', 'POST'])
+@login_required
 def create_teacher_view():
     form = CreateTeacherForm()
     if form.validate_on_submit():
@@ -472,6 +490,7 @@ def create_teacher_view():
 
 # ---- TEACHER UPDATE ----
 @admin_bp.route('/update_teacher/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_teacher_view(id):
     form = UpdateTeacherForm()
     if form.validate_on_submit():
@@ -512,6 +531,7 @@ def update_teacher_view(id):
 
 # ---- WRITER VIEW ----
 @admin_bp.route('/view_writers', methods=['GET', 'POST'])
+@login_required
 def view_writers():
     pfp_form = ChangeUserProfilePictureForm()
     if pfp_form.validate_on_submit() and pfp_form.profile_picture.data:
@@ -555,6 +575,7 @@ def view_writers():
 
 # ---- WRITER CREATION ----
 @admin_bp.route('/create_writer', methods=['GET', 'POST'])
+@login_required
 def create_writer_view():
     form = CreateWriterForm()
     if form.validate_on_submit():
@@ -574,6 +595,7 @@ def create_writer_view():
 
 # ---- WRITER UPDATE ----
 @admin_bp.route('/update_writer/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_writer_view(id):
     writer_user = get_user_by_id(id)
     if not writer_user or writer_user.role != 'writer':
@@ -622,12 +644,14 @@ def update_writer_view(id):
 
 # ---- ARTICLE VIEW ----
 @admin_bp.route('/view_articles', methods=['GET'])
+@login_required
 def view_articles():
     articles = get_all_articles()
     return render_template('admin/view_articles.html', articles=articles)
 
 # ---- ARTICLE CREATION ----
 @admin_bp.route('/create_article', methods=['GET', 'POST'])
+@login_required
 def create_article_view():
     form = CreateArticleForm()
     if form.validate_on_submit():
@@ -647,6 +671,7 @@ def create_article_view():
 
 # ---- ARTICLE UPDATE ----
 @admin_bp.route('/update_article/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update_article_view(id):
     article = get_article_by_id(id)
     if not article:
@@ -688,6 +713,7 @@ def update_article_view(id):
 
 # ---- ARTICLE DELETE ----
 @admin_bp.route('/delete_article/<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_article_view(id):
     article = get_article_by_id(id)
     if not article:
@@ -701,3 +727,67 @@ def delete_article_view(id):
             # flash('Article deleted successfully.', 'success') # Optional
             return redirect(url_for('admin.view_articles'))
     return render_template('admin/delete_article.html', form=form, article=article)
+
+# ===========================
+# SCHOOL SETTINGS
+# ===========================
+
+@admin_bp.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    form = SchoolSettingsForm()
+    
+    school_info_path = os.path.join('..', current_app.instance_path, 'school_info.json')
+
+    if form.validate_on_submit():
+        school_name = form.school_name.data
+        school_address = form.school_address.data
+        school_phone = form.school_phone.data
+        school_email = form.school_email.data
+        school_website = form.school_website.data
+
+        if os.path.exists(school_info_path):
+            with open(school_info_path, 'r+', encoding='utf-8') as f:
+                school_info = json.load(f)
+
+        school_info['school_name'] = school_name
+        school_info['school_address'] = school_address
+        school_info['school_phone'] = school_phone
+        school_info['school_email'] = school_email
+        school_info['school_website'] = school_website
+        
+        with open(school_info_path, 'w', encoding='utf-8') as f:
+            json.dump(school_info, f, indent=4)
+
+        # Logo upload handling
+        if form.school_logo.data:
+            logo_file = form.school_logo.data
+            logo_filename = secure_filename(logo_file.filename)
+            
+            relative_logo_save_dir = os.path.join('assets', 'uploads')
+            logo_save_dir = os.path.join(current_app.static_folder, relative_logo_save_dir)
+            os.makedirs(logo_save_dir, exist_ok=True)
+            
+            full_logo_save_path = os.path.join(logo_save_dir, logo_filename)
+            logo_file.save(full_logo_save_path)
+            
+            school_info['school_logo_filename'] = logo_filename 
+            
+            with open(school_info_path, 'w', encoding='utf-8') as f:
+                json.dump(school_info, f, indent=4)
+        
+        return redirect(url_for('admin.settings')) 
+    else:
+        school_info = {}
+        if os.path.exists(school_info_path):
+            with open(school_info_path, 'r', encoding='utf-8') as f:
+                school_info = json.load(f)
+        print(school_info)
+        form.school_name.data = school_info.get('school_name', '')
+        form.school_address.data = school_info.get('school_address', '')
+        form.school_phone.data = school_info.get('school_phone', '')
+        form.school_email.data = school_info.get('school_email', '')
+        form.school_website.data = school_info.get('school_website', '')
+        # The template will display the current logo based on school_info!
+
+    return render_template('admin/settings.html', form=form, school_info=school_info)
